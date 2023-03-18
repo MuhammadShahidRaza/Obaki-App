@@ -9,17 +9,17 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {Button} from './src/components/buttons';
-import {Color} from './src/utils/color';
+import { Button } from '../../components/buttons';
+import { Color } from '../../utils/color';
 
 const {height} = Dimensions.get('screen');
 
-function SelectLanguagePage() {
+function SelectLanguagePage({navigation}) {
   const languages = ['English', 'Thai', 'Vietnamese', 'Arabic'];
   const [selectedLanguage, setSelectedLanguage] = useState('');
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{backgroundColor:"white",height:height}}>
       <ScrollView>
         <View
           style={{
@@ -46,7 +46,6 @@ function SelectLanguagePage() {
         <View
           style={{
             backgroundColor: Color.WHITE,
-            height: height,
             borderTopRightRadius: 50,
             borderTopStartRadius: 50,
             top: -50,
@@ -81,9 +80,9 @@ function SelectLanguagePage() {
                     }}>
                     <View
                       style={{
-                        width: 18,
-                        height: 18,
-                        borderRadius: 18,
+                        width: 20,
+                        height: 20,
+                        borderRadius: 20,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -102,7 +101,7 @@ function SelectLanguagePage() {
                         }}
                       />
                     </View>
-                    <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+                    <Text style={{fontSize: 20, fontWeight: 'bold',color:Color.BLACK}}>
                       {item}
                     </Text>
                   </View>
@@ -112,7 +111,7 @@ function SelectLanguagePage() {
           </View>
 
           <Button
-            onPress={() => {}}
+           onPress={() => selectedLanguage && navigation.navigate('SignUp')}
             title="Next"
             containerStyle={{marginHorizontal: 20, marginVertical: 40}}
           />
