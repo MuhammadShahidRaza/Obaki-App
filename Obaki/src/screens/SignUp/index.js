@@ -1,4 +1,5 @@
 import React, {useRef, useState} from 'react';
+import {TextInput} from 'react-native';
 import {
   SafeAreaView,
   Dimensions,
@@ -8,22 +9,27 @@ import {
   View,
   TouchableOpacity,
   Text,
+  Modal,
 } from 'react-native';
 import PhoneInput from 'react-native-phone-number-input';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {Button} from './src/components/buttons';
-import {Color} from './src/utils/color';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {Button} from '../../components/buttons';
+import {Input} from '../../components/inputs';
+import {Color} from '../../utils/color';
 
 const {height} = Dimensions.get('screen');
 
-function SignUp() {
+function SignUp({navigation}) {
   const [value, setValue] = useState('');
   const phoneInput = useRef < PhoneInput > null;
   const [formattedValue, setFormattedValue] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [password, setPassword] = useState('');
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{backgroundColor: 'white'}}>
       <ScrollView>
         <View
           style={{
@@ -33,6 +39,15 @@ function SignUp() {
             alignItems: 'center',
             justifyContent: 'center',
           }}>
+          <View style={{position: 'absolute', right: 25, top: 35}}>
+            <TouchableOpacity 
+            onPress={()=>{
+              navigation.navigate("Home")
+            }}
+            >
+              <Text style={{fontSize: 22, color: Color.WHITE}}>Skip</Text>
+            </TouchableOpacity>
+          </View>
           <View
             style={{
               width: 100,
@@ -50,7 +65,6 @@ function SignUp() {
         <View
           style={{
             backgroundColor: Color.WHITE,
-            height: height -200,
             borderTopRightRadius: 50,
             borderTopStartRadius: 50,
             top: -50,
@@ -99,8 +113,16 @@ function SignUp() {
               />
             </View>
 
+            <Input
+              onChangeText={setPassword}
+              value={password}
+              placeholder="Password"
+            />
+
             <Button
-              onPress={() => {}}
+              onPress={() => {
+                navigation.navigate('OptVerification');
+              }}
               title="CONTINUE"
               containerStyle={{marginTop: 40}}
             />
@@ -126,7 +148,11 @@ function SignUp() {
                 I already have an account
               </Text>
 
-              <TouchableOpacity>
+              <TouchableOpacity 
+               onPress={() => {
+                navigation.navigate('SignIn');
+              }}
+              >
                 <Text
                   style={{fontSize: 18, color: Color.ORANGE, marginLeft: 8}}>
                   Sign In
@@ -144,7 +170,7 @@ function SignUp() {
               <View>
                 <TouchableOpacity>
                   <Image
-                    source={require('./src/assets/images/googlelogo.png')}
+                    source={require('../../assets/images/googlelogo.png')}
                     style={{width: 60, height: 60}}
                   />
                 </TouchableOpacity>
@@ -152,12 +178,15 @@ function SignUp() {
               <View style={{marginHorizontal: 6}}>
                 <TouchableOpacity>
                   <Image
-                    source={require('./src/assets/images/facebooklogo.png')}
+                    source={require('../../assets/images/facebooklogo.png')}
                     style={{width: 80, height: 80}}
                   />
                 </TouchableOpacity>
               </View>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+                }}>
                 <View
                   style={{
                     height: 60,
@@ -181,6 +210,86 @@ function SignUp() {
           </View>
         </View>
       </ScrollView>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}>
+        <View
+          style={{
+            backgroundColor: 'rgba(0,0,0,0.4)',
+            flex: 1,
+            justifyContent: 'flex-end',
+          }}>
+          <TouchableOpacity
+            onPress={() => {
+              setModalVisible(!modalVisible);
+            }}
+            style={{
+              width: 65,
+              height: 65,
+              backgroundColor: Color.BLACK,
+              borderRadius: 65,
+              bottom: -30,
+              zIndex: 1,
+              left: 160,
+
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <View>
+              <Entypo name="cross" color={Color.WHITE} size={32} />
+            </View>
+          </TouchableOpacity>
+          <View
+            style={{
+              backgroundColor: 'white',
+              paddingHorizontal: 20,
+              paddingVertical: 30,
+              height: 350,
+              borderColor: Color.BLACK,
+              borderWidth: 3,
+              borderTopLeftRadius: 40,
+              borderTopRightRadius: 40,
+            }}>
+            <TouchableOpacity
+             onPress={() => {
+              navigation.navigate('SignUpWithEmail');
+            }}
+            >
+              <View
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginVertical: 20,
+                  elevation: 0.5,
+                  paddingVertical: 10,
+                  borderColor: Color.GREY,
+                  flexDirection: 'row',
+                }}>
+                <MaterialCommunityIcons
+                  name="email"
+                  color={Color.BLACK}
+                  size={28}
+                />
+                <Text
+                  style={{
+                    marginLeft: 10,
+                    color: Color.BLACK,
+                    fontSize: 17,
+                    fontWeight: 500,
+                  }}>
+                  Continue With Email
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
