@@ -28,14 +28,14 @@ export function PressableText({ onPress, title, textStyle, _containerStyle }) {
 const styles = StyleSheet.create({
   titleStyle: {
     color: "white",
-    fontWeight: "bold",
+    // fontWeight: "bold",
     textAlign: "center",
     fontSize: 18,
     fontFamily:"Raleway"
   },
   button: {
     backgroundColor: Color.BLACK,
-    height: "8%",
+    height: 60,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
