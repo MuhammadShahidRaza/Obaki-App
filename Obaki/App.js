@@ -8,6 +8,8 @@ import SignUpWithEmail from './src/screens/SignUpWithEmail';
 import SignIn from './src/screens/SignIn';
 import EnterName from './src/screens/EnterName';
 import Home from './src/screens/Home';
+import ChooseOptions from './src/screens/ChooseOptions';
+import RegisterChef from './src/screens/RegisterChef';
 const Stack = createNativeStackNavigator();
 
 function App() {
@@ -17,13 +19,15 @@ function App() {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={headerOption}
-        initialRouteName="Home">
+        initialRouteName="RegisterChef">
         <Stack.Screen
           name="SelectLanguagePage"
           component={SelectLanguagePage}
           options={headerOption}
         />
         <Stack.Screen name="SignIn" component={SignIn} options={headerOption} />
+        <Stack.Screen name="ChooseOptions" component={ChooseOptions} options={headerOption} />
+        <Stack.Screen name="RegisterChef" component={RegisterChef} options={headerOption} />
         <Stack.Screen name="Home" component={Home} options={headerOption} />
         <Stack.Screen name="SignUp" component={SignUp} options={headerOption} />
         <Stack.Screen name="EnterName" component={EnterName} options={headerOption} />
