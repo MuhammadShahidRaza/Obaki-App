@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Dimensions,
   SafeAreaView,
@@ -7,24 +7,85 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native';
-import {Button} from '../../components/buttons';
-import {Input} from '../../components/inputs';
-import {Color} from '../../utils/color';
+import { Button } from '../../components/buttons';
+import { Input } from '../../components/inputs';
+import { Color } from '../../utils/color';
 import CountryPicker from 'react-native-country-picker-modal';
-const {height} = Dimensions.get('screen');
+import { showToast } from '../../utils/Toast';
+import axios from 'axios';
+import { BASE_URL } from '../../constants/keys';
+import { SaveItemToStorage } from '../../utils/storage';
 
-function EnterName({navigation}) {
+const { height } = Dimensions.get('screen');
+
+function EnterName({ navigation, route }) {
+  const { phone, password, email } = route.params;
   const [name, setName] = useState('');
   const [country, setCountry] = useState(null);
+  const [openCountryModal, setOpenCountryModal] = useState(false);
 
   const onSelect = country => {
     setCountry(country);
   };
 
+
+
+  async function addDetails_SignIn() {
+    if (name && country?.name) {
+
+
+
+      const body = phone ? {
+        "phone": phone,
+        "password": password
+      } :
+        {
+          "email": email,
+          "password": password
+        };
+
+      try {
+        const response = await axios.post(`${BASE_URL}/login`, body);
+        const result = response.data;
+
+        if (result) {
+          const token = result.message.token
+          const userID = result.message._id
+    SaveItemToStorage("TOKEN", token)
+    SaveItemToStorage("USER_ID", userID)
+          showToast({
+            type: "success",
+            message: `Welcome ${name}`,
+          });
+          navigation.replace("Home");
+        }
+
+        return
+      } catch (errors) {
+        console.log(errors.response.data)
+        // const Error = errors?.response?.data?.message[0]?.message ?? errors?.response?.data?.message;
+        // showToast({
+        //   type: "error",
+        //   message: Error
+        // });
+      }
+    }
+    else {
+      showToast({
+        type: "error",
+        message: "Please Fill All the Feilds"
+      });
+    }
+
+  }
+
+
+
+
   return (
-    <SafeAreaView style={{backgroundColor: Color.WHITE, height: height}}>
+    <SafeAreaView style={{ backgroundColor: Color.WHITE, height: height }}>
       <ScrollView>
-        <View style={{marginHorizontal: 20}}>
+        <View style={{ marginHorizontal: 20 }}>
           <View
             style={{
               marginVertical: 60,
@@ -42,7 +103,7 @@ function EnterName({navigation}) {
               Tell us your name
             </Text>
           </View>
-          <View style={{height: 350}}>
+          <View style={{ height: 350 }}>
             <Input
               onChangeText={setName}
               value={name}
@@ -60,7 +121,7 @@ function EnterName({navigation}) {
                 Choose Your Country
               </Text>
 
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={{
                   elevation: 2,
                   display: 'flex',
@@ -80,18 +141,51 @@ function EnterName({navigation}) {
                 <Text style={{color: Color.BLACK, fontSize: 16, bottom: 10}}>
                   {country?.name }
                 </Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
+              <View>
+                <TouchableOpacity
+                  onPress={() => {
+                    setOpenCountryModal(!openCountryModal);
+                  }}
+                  style={{
+                    elevation: 2,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    backgroundColor: 'white',
+                    paddingVertical: 6,
+                    paddingHorizontal: 10,
+                    marginVertical: 10,
+                  }}>
+                  <CountryPicker
+                    placeholder={''}
+                    {...{
+                      onSelect,
+                    }}
+                    withFilter
+                    visible={openCountryModal}
+                  />
+                  <Text
+                    style={{
+                      color: country?.name ? Color.BLACK : Color.GREY,
+                      fontSize: 16,
+                      bottom: 10,
+                    }}>
+                    {country?.name ? country?.name : 'Country'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
 
           <View>
             <Button
-              onPress={() => { 
-name && country?.name &&
-                navigation.navigate('Home');
+              onPress={() => {
+
+                addDetails_SignIn()
+
               }}
               title="CONTINUE"
-              containerStyle={{marginTop: 0}}
+              containerStyle={{ marginTop: 0 }}
             />
           </View>
         </View>

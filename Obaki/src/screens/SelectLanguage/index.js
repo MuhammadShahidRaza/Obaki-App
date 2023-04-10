@@ -1,9 +1,10 @@
-import React, {useState} from 'react';
+import React, { useState,useEffect } from 'react';
 import {
   SafeAreaView,
   Dimensions,
   ScrollView,
   StyleSheet,
+  ActivityIndicator,
   View,
   Text,
   TouchableOpacity,
@@ -11,15 +12,73 @@ import {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { Button } from '../../components/buttons';
 import { Color } from '../../utils/color';
+import { showToast } from '../../utils/Toast';
+import { GetItemFromStorage } from '../../utils/storage';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
-const {height} = Dimensions.get('screen');
+const { height } = Dimensions.get('screen');
 
-function SelectLanguagePage({navigation}) {
+function SelectLanguagePage({ navigation }) {
   const languages = ['English', 'Thai', 'Vietnamese', 'Arabic'];
   const [selectedLanguage, setSelectedLanguage] = useState('');
+const [isLoading, setIsLoading] = useState(true)
+
+useEffect( async() => {
+
+  setTimeout(() => {
+    setIsLoading(false)
+  }, 3000);
+
+
+
+ const isLoggedIn = await GetItemFromStorage("TOKEN")
+
+if (isLoggedIn) {
+  navigation.replace("Home")
+}
+
+
+}, [])
+
+
+
+
+
+
+if (isLoading) {
+  return (
+    <View
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "white",
+      }}
+    >
+      <ActivityIndicator size="large" color={Colors.ORANGE} />
+    </View>
+  );
+}
+
+
+
+
+  async function selectedLanguageFunc() {
+    if (selectedLanguage) {
+      navigation.navigate('SignUp')
+    }
+    else {
+      showToast({
+        type: "error",
+        message: "Please select a language."
+      });
+    }
+  }
 
   return (
-    <SafeAreaView style={{backgroundColor:"white",height:height}}>
+    <SafeAreaView style={{ backgroundColor: "white", height: height }}>
       <ScrollView>
         <View
           style={{
@@ -58,11 +117,11 @@ function SelectLanguagePage({navigation}) {
               alignItems: 'center',
             }}>
             <Text
-              style={{fontWeight: 'bold', fontSize: 25, color: Color.BLACK}}>
+              style={{ fontWeight: 'bold', fontSize: 25, color: Color.BLACK }}>
               Select Your App Language
             </Text>
           </View>
-          <View style={{marginHorizontal: 20}}>
+          <View style={{ marginHorizontal: 20 }}>
             {languages.map((item, index) => {
               const isSelected = selectedLanguage === item;
               return (
@@ -101,7 +160,7 @@ function SelectLanguagePage({navigation}) {
                         }}
                       />
                     </View>
-                    <Text style={{fontSize: 20, fontWeight: 'bold',color:Color.BLACK}}>
+                    <Text style={{ fontSize: 20, fontWeight: 'bold', color: Color.BLACK }}>
                       {item}
                     </Text>
                   </View>
@@ -111,9 +170,9 @@ function SelectLanguagePage({navigation}) {
           </View>
 
           <Button
-           onPress={() => selectedLanguage && navigation.navigate('SignUp')}
-            title="Next"
-            containerStyle={{marginHorizontal: 20, marginVertical: 40}}
+            onPress={() => { selectedLanguageFunc() }}
+            title="NEXT"
+            containerStyle={{ marginHorizontal: 20, marginVertical: 40 }}
           />
         </View>
       </ScrollView>

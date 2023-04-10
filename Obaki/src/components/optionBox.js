@@ -26,6 +26,7 @@ const OptionBox = ({image,title,onPress}) => {
           fontSize: 20,
           fontWeight: 'bold',
           marginBottom: 20,
+          color:Color.GREY,
           textAlign: 'center',
         }}>
        {title}

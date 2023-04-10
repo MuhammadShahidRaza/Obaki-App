@@ -10,7 +10,7 @@ export function Input({ containerStyle, inputStyle, ...inputProps }) {
   const input = { ...styles.input, ...inputStyle };
   return (
     <View style={container}>
-      <TextInput style={input} {...inputProps} />
+      <TextInput style={input} {...inputProps}  placeholderTextColor={Color.GREY}  />
     </View>
   );
 }

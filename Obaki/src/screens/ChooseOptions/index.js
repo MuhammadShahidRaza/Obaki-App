@@ -17,7 +17,7 @@ const ChooseOptions = ({navigation}) => {
   return (
     <SafeAreaView>
         <ScrollView >
-      <Header />
+      <Header navigation={navigation} />
       <View>
         <View style={{display: 'flex', alignItems: 'center'}}>
           <Text style={{fontSize: 20, fontWeight: '900', color: Color.BLACK}}>
@@ -33,7 +33,7 @@ const ChooseOptions = ({navigation}) => {
             marginBottom:30
           }}>
           <OptionBox
-            image={require('../../assets/images/popular.jpg')}
+            image={require('../../assets/images/mainChef.png')}
             title="Become A Cook"
             onPress={()=>{
                 navigation.navigate("RegisterChef")
@@ -43,13 +43,16 @@ const ChooseOptions = ({navigation}) => {
             image={require('../../assets/images/entertainer.png')}
             title="Entertainer"
             onPress={()=>{
+              navigation.navigate("Entertainer")
 
             }}
           />
           <OptionBox
-            image={require('../../assets/images/property.jpg')}
+            image={require('../../assets/images/mainProperty.png')}
             title="List Your Property"
             onPress={()=>{
+              navigation.navigate("Property")
+
 
             }}
           />

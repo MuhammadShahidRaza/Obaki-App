@@ -1,5 +1,5 @@
-import React, {useRef, useState} from 'react';
-import {TextInput} from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { TextInput } from 'react-native';
 import {
   SafeAreaView,
   Dimensions,
@@ -15,21 +15,93 @@ import PhoneInput from 'react-native-phone-number-input';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Button} from '../../components/buttons';
-import {Input} from '../../components/inputs';
-import {Color} from '../../utils/color';
+import { Button } from '../../components/buttons';
+import { Input } from '../../components/inputs';
+import { BASE_URL } from '../../constants/keys';
+import { Color } from '../../utils/color';
+import axios from 'axios';
+import { isEmpty } from '../../utils/helper';
+import { showToast } from '../../utils/Toast';
 
-const {height} = Dimensions.get('screen');
+const { height } = Dimensions.get('screen');
 
-function SignUp({navigation}) {
+function SignUp({ navigation }) {
   const [value, setValue] = useState('');
   const phoneInput = useRef < PhoneInput > null;
   const [formattedValue, setFormattedValue] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [password, setPassword] = useState('');
 
+
+
+
+
+  async function signUpUser() {
+    if (isEmpty(password) || isEmpty(formattedValue)) {
+      showToast({
+        type: "error",
+        message: "Please Fill All the Feilds"
+      });
+      return
+    }
+
+
+    if (password.length >= 8) {
+
+      if (formattedValue.length >= 12 && formattedValue.length <= 14) {
+
+
+        const body = {
+          "phone": formattedValue,
+          "password": password
+        }
+        try {
+
+          const response = await axios.post(`${BASE_URL}/user`, body);
+          const result = response.data;
+          if (result) {
+            // SaveItemToStorage("userPhone" , formattedValue)
+            // SaveItemToStorage("userPhonePassword" , password)
+            showToast({
+              type: "success",
+              message: result.message
+            });
+            navigation.navigate('OptVerification', {
+                _password:password,
+                phone:formattedValue
+            });
+          }
+        } catch (errors) {
+          console.log(errors?.response?.data)
+
+          const Error = errors?.response?.data?.message[0]?.message ?? errors?.response?.data?.message
+          showToast({
+            type: "error",
+            message: Error
+          });
+        }
+      }
+      else {
+        showToast({
+          type: "error",
+          message: "Please Enter Valid Number"
+        });
+      }
+    }
+    else {
+      showToast({
+        type: "error",
+        message: "Password should not be less tha 8 digits."
+      });
+
+    }
+
+  };
+
+
+
   return (
-    <SafeAreaView style={{backgroundColor: 'white'}}>
+    <SafeAreaView style={{ backgroundColor: 'white' }}>
       <ScrollView>
         <View
           style={{
@@ -39,13 +111,13 @@ function SignUp({navigation}) {
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <View style={{position: 'absolute', right: 25, top: 35}}>
-            <TouchableOpacity 
-            onPress={()=>{
-              navigation.navigate("Home")
-            }}
+          <View style={{ position: 'absolute', right: 25, top: 35 }}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Home")
+              }}
             >
-              <Text style={{fontSize: 22, color: Color.WHITE}}>Skip</Text>
+              <Text style={{ fontSize: 22, color: Color.WHITE }}>Skip</Text>
             </TouchableOpacity>
           </View>
           <View
@@ -69,23 +141,23 @@ function SignUp({navigation}) {
             borderTopStartRadius: 50,
             top: -50,
           }}>
-          <View style={{marginHorizontal: 20}}>
+          <View style={{ marginHorizontal: 20 }}>
             <View
               style={{
                 marginTop: 50,
                 marginBottom: 30,
               }}>
               <Text
-                style={{fontWeight: 'bold', fontSize: 25, color: Color.BLACK}}>
+                style={{ fontWeight: 'bold', fontSize: 25, color: Color.BLACK }}>
                 Sign Up
               </Text>
-              <Text style={{fontSize: 25, color: Color.BLACK}}>
+              <Text style={{ fontSize: 25, color: Color.BLACK }}>
                 Sign up to Continue
               </Text>
             </View>
             <View>
               <Text
-                style={{marginBottom: 15, color: Color.BLACK, fontWeight: 500}}>
+                style={{ marginBottom: 15, color: Color.BLACK, fontWeight: 500 }}>
                 Mobile Number
               </Text>
               <PhoneInput
@@ -102,8 +174,8 @@ function SignUp({navigation}) {
                 textInputStyle={{
                   padding: 0,
                 }}
-                countryPickerButtonStyle={{backgroundColor: Color.WHITE}}
-                containerStyle={{width: '100%'}}
+                countryPickerButtonStyle={{ backgroundColor: Color.WHITE }}
+                containerStyle={{ width: '100%' }}
                 onChangeFormattedText={text => {
                   setFormattedValue(text);
                 }}
@@ -121,19 +193,23 @@ function SignUp({navigation}) {
 
             <Button
               onPress={() => {
-                navigation.navigate('OptVerification');
+
+                signUpUser()
+                // navigation.navigate('OptVerification', {
+                //   phone: formattedValue
+                // });
               }}
               title="CONTINUE"
-              containerStyle={{marginTop: 40}}
+              containerStyle={{ marginTop: 40 }}
             />
           </View>
-          <View style={{display: 'flex', alignItems: 'center'}}>
+          <View style={{ display: 'flex', alignItems: 'center' }}>
             <Text
-              style={{fontSize: 16, color: Color.BLACK, marginVertical: 10}}>
+              style={{ fontSize: 16, color: Color.BLACK, marginVertical: 10 }}>
               By Creating the account you agree the
             </Text>
             <TouchableOpacity>
-              <Text style={{fontSize: 18, color: Color.ORANGE}}>
+              <Text style={{ fontSize: 18, color: Color.ORANGE }}>
                 Terms of use.
               </Text>
             </TouchableOpacity>
@@ -144,17 +220,17 @@ function SignUp({navigation}) {
                 flexDirection: 'row',
                 marginVertical: 30,
               }}>
-              <Text style={{fontSize: 18, color: Color.BLACK}}>
+              <Text style={{ fontSize: 18, color: Color.BLACK }}>
                 I already have an account
               </Text>
 
-              <TouchableOpacity 
-               onPress={() => {
-                navigation.navigate('SignIn');
-              }}
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('SignIn');
+                }}
               >
                 <Text
-                  style={{fontSize: 18, color: Color.ORANGE, marginLeft: 8}}>
+                  style={{ fontSize: 18, color: Color.ORANGE, marginLeft: 8 }}>
                   Sign In
                 </Text>
               </TouchableOpacity>
@@ -171,20 +247,21 @@ function SignUp({navigation}) {
                 <TouchableOpacity>
                   <Image
                     source={require('../../assets/images/googlelogo.png')}
-                    style={{width: 60, height: 60}}
+                    style={{ width: 60, height: 60 }}
                   />
                 </TouchableOpacity>
               </View>
-              <View style={{marginHorizontal: 6}}>
+              <View style={{ marginHorizontal: 6 }}>
                 <TouchableOpacity>
                   <Image
                     source={require('../../assets/images/facebooklogo.png')}
-                    style={{width: 80, height: 80}}
+                    style={{ width: 80, height: 80 }}
                   />
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
                 onPress={() => {
+                  console.log("hi");
                   setModalVisible(!modalVisible);
                 }}>
                 <View
@@ -256,9 +333,12 @@ function SignUp({navigation}) {
               borderTopRightRadius: 40,
             }}>
             <TouchableOpacity
-             onPress={() => {
-              navigation.navigate('SignUpWithEmail');
-            }}
+              onPress={() => {
+                navigation.navigate('SignUpWithEmail',{
+                  isFromsignIn: false
+                });
+                setModalVisible(false)
+              }}
             >
               <View
                 style={{
