@@ -200,13 +200,13 @@ const RegisterChef = ({ navigation,route }) => {
                 cropping: true,
                 multiple: true,
                 maxFiles: 5,
-                // includeBase64: true,
+                 includeBase64: true,
 
 
               }).then(image => {
 
-                // const list = image.map(item => imageUpload("dishImage", item.path, item.mime));
-                // setDishImageBase64(list)
+                const list = image.map(item => item.data);
+                setDishImageBase64(list)
                 setDishImage(image);
 
               });
@@ -222,11 +222,10 @@ const RegisterChef = ({ navigation,route }) => {
                 multiple: true,
                 maxFiles: 5,
 
-                // includeBase64: true,
+                includeBase64: true,
               }).then(image => {
-
-                // const list = image.map(item => imageUpload("dishImage", item.path, item.mime));
-                // setDishImageBase64(list)
+                const list = image.map(item => item.data);
+                setDishImageBase64(list)
                 setDishImage(image);
 
               });
@@ -243,26 +242,10 @@ const RegisterChef = ({ navigation,route }) => {
   }
 
 
-   const imageUpload =  async (image, name, folder,id) => {
-    // const imageData = new FormData()
-    // imageData.append(name, {
-    //   uri: path,
-    //   name: `${name}${type}`,
-    //   fileName: "image",
-    //   type: type
-    // })
+  
 
 
-    const blob = await (await fetch(image)).blob();
-    await storage()
-      .ref(`/${folder}/${id}/${name}`)
-      .put(blob);
-    const url = await storage()
-    .ref(`/${folder}/${id}/${name}`)
-      .getDownloadURL();
-
-    // return JSON.stringify(imageData);
-  }
+    
 
   async function addChef() {
     if (isEmpty(name) || !country?.name || isEmpty(stateProvince) || experience === 0 || isEmptyArray(foodCountry) || isEmptyArray(foodType) || isEmptyArray(dietaryType) || isEmpty(haveCertificate) || isEmpty(ownHouse) || isEmpty(description)) {
@@ -284,13 +267,13 @@ const RegisterChef = ({ navigation,route }) => {
         "foodType": foodType,
         "dietaryType": dietaryType,
         "description": description,
-        "dishImage": ["https://placeimg.com/640/480/arch"],
+        // "dishImage": ["https://placeimg.com/640/480/arch"],
         // "profilePicture": "https://placeimg.com/640/480/arch",
         "certificate":  "https://placeimg.com/640/480/arch",
         "restaurantHouse": route?.params?.resturantOrHouseId ?? "",
         "profilePicture": profileImageBase64,
         //  "certificate": route?.params?.CertificateImage ?? "https://placeimg.com/640/480/arch",
-        // "dishImage": dishImageBase64,
+        "dishImage": dishImageBase64,
       }
 
       const token = await GetItemFromStorage("TOKEN")
